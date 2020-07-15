@@ -1,8 +1,6 @@
 <template>
   <div>
-    <v-container fill-height fluid>
-      <v-layout row wrap align-center>
-      <v-row align="center" justify="center">
+      <v-row justify="center">
         <v-col cols="5">
           <form>
             <v-text-field v-model="form.name" label="Name" required></v-text-field>
@@ -13,18 +11,9 @@
           </form>
         </v-col>
       </v-row>
-      </v-layout>
-    </v-container>
 
 
 
-    <v-container fill-height>
-    <v-row justify="center" align="center">
-        <v-col cols="12" sm="10">
-            Centered both vertically and horizontally
-        </v-col>
-    </v-row>
-</v-container>
   </div>
 </template>
 
