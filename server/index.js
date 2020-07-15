@@ -6,7 +6,7 @@ var path = require('path')
 
 
 
-app.use('/static', express.static(path.resolve("src")))
+/* app.use('/static', express.static(path.resolve("src"))) */
 
 let contacts =
     [
