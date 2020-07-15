@@ -4,17 +4,10 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "server": "nodemon src/server/index.js",
-    "dev": "concurrently \"npm run server\" \"npm run serve\""
+    "build": "vue-cli-service build"
   },
   "dependencies": {
-    "concurrently": "^5.2.0",
     "core-js": "^3.6.5",
-    "express": "^4.17.1",
-    "node": "^14.5.0",
-    "nodemon": "^2.0.4",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
     "vuex": "^3.4.0"
