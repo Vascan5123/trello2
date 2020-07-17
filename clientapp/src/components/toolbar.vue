@@ -6,7 +6,7 @@
 
       <v-spacer></v-spacer>
 
-      <v-btn color="green darken-1" class="mx-sm-5 mx-1 text-subtitle-1 font-weight-medium">
+      <v-btn color="green darken-1" class="mx-sm-5 mx-1 text-subtitle-1 font-weight-medium" @click="SetSign('true'), SetSignMode('login')">
         Войти
         <v-icon class="ml-3">mdi-account-key</v-icon>
       </v-btn>
@@ -16,7 +16,19 @@
 
 <script>
 export default {
-
+  computed:{
+    GetSignMode(){
+      return this.$store.getters.get_sign_mode;
+    }
+  },
+  methods:{
+    SetSignMode(mode){
+      this.$store.dispatch("SetSignModeAction", mode);
+    },
+    SetSign(mode){
+      this.$store.dispatch("SetSignAction", mode);
+    }
+  }
 }
 </script>
 
