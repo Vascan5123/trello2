@@ -1,19 +1,16 @@
 <template>
   <div>
-      <v-row justify="center">
-        <v-col cols="5">
-          <form>
-            <v-text-field v-model="form.name" label="Name" required></v-text-field>
-            <v-text-field v-model="form.lastname" label="E-mail"></v-text-field>
+    <v-row justify="center">
+      <v-col cols="5">
+        <form>
+          <v-text-field v-model="form.name" label="Name" required></v-text-field>
+          <v-text-field v-model="form.lastname" label="E-mail"></v-text-field>
 
-            <v-btn class="mr-4 primary" :disabled="!CanCreate" @click="submit">submit</v-btn>
-            <v-btn @click="clear">clear</v-btn>
-          </form>
-        </v-col>
-      </v-row>
-
-
-
+          <v-btn class="mr-4 primary" :disabled="!CanCreate" @click="submit">submit</v-btn>
+          <v-btn @click="clear">clear</v-btn>
+        </form>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
@@ -53,10 +50,6 @@ export default {
   },
   async mounted() {
     var data = await request("/api/contacts/");
-    /* var data = await request("http://localhost:8080/api/contacts/"); */
-
-    /* for(var i = 0; i < data.length; i++)
-        this.contacts.push({...data[i]}) */
     console.log(data);
   }
 };
@@ -77,8 +70,8 @@ async function request(url, method = "GET", data = null) {
       body,
       mode: "no-cors"
     })
-      .then(res => {
-        return res;
+      .then(response => {
+        return response.json();
       })
       .catch(error => {
         console.log(error);
