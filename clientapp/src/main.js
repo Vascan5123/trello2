@@ -4,6 +4,9 @@ import router from './router'
 import store from './store'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
+import PhoneScrollPrimaryPage from './directives/PhoneScrollPrimaryPage.js'
+
+Vue.directive('PhoneScroll', PhoneScrollPrimaryPage)
 
 Vue.use(Vuetify)
 const vuetifyOptions = {}

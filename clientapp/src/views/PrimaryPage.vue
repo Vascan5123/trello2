@@ -1,8 +1,8 @@
 <template>
   <div>
     <v-main>
-      <v-card class="div1_top" dark>
-        <toolbar />
+      <toolbar />
+      <v-card class="div1_top pt-12" dark>
         <v-container>
           <v-row justify="center">
             <v-col cols="12" xl="4" lg="6" md="6" sm="10">
@@ -44,65 +44,79 @@
 
             <!--SignUp-->
             <v-container v-show="GetSignMode == 'reg'">
-              <div class="py-3 font-weight-medium">Регистрация аккаунта</div>
-              <v-row justify="center">
-                <v-col cols="11" sm="6">
-                  <v-text-field label="Введите адрес электронной почты" outlined></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row justify="center">
-                <v-col cols="11" sm="6">
-                  <v-text-field label="Введите полное имя" outlined></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row justify="center">
-                <v-col cols="11" sm="6">
-                  <v-text-field
-                    label="Введите пароль"
-                    outlined
-                    :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
-                    :rules="[rules.required, rules.min]"
-                    :type="show1 ? 'text' : 'password'"
-                    @click:append="show1 = !show1"
-                    value
-                  ></v-text-field>
-                </v-col>
-              </v-row>
-              <v-row justify="center" class="text-subtitle-2">
-                <v-col cols="11" sm="6">
-                  Регистрируясь, я соглашаюсь с
-                  <a
-                    href="https://www.atlassian.com/legal/cloud-terms-of-service"
-                    target="blank"
-                  >Условиями использования продуктов Cloud</a>
-                  и принимаю
-                  <a
-                    href="https://www.atlassian.com/legal/privacy-policy"
-                    target="blank"
-                  >Политику конфиденциальности Atlassian.</a>
-                </v-col>
-              </v-row>
-              <v-btn
-                class="mt-4 mb-4"
-                dark
-                color="green darken-1"
-                @click="registerBotton = !registerBotton"
-              >Регистрация</v-btn>
-              <v-row justify="center">
+              <form action="/api/newuser" method="POST">
+                <div class="py-3 font-weight-medium">Регистрация аккаунта</div>
+                <v-row justify="center">
+                  <v-col cols="11" sm="6">
+                    <v-text-field
+                      label="Введите адрес электронной почты"
+                      outlined
+                      v-model="SignUpData.email"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+                <v-row justify="center">
+                  <v-col cols="11" sm="6">
+                    <v-text-field
+                      name="name"
+                      label="Введите полное имя"
+                      outlined
+                      v-model="SignUpData.name"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+                <v-row justify="center">
+                  <v-col cols="11" sm="6">
+                    <v-text-field
+                      label="Введите пароль"
+                      outlined
+                      :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
+                      :rules="[rules.required, rules.min]"
+                      :type="show1 ? 'text' : 'password'"
+                      @click:append="show1 = !show1"
+                      value
+                      v-model="SignUpData.password"
+                    ></v-text-field>
+                  </v-col>
+                </v-row>
+                <v-row justify="center" class="text-subtitle-2">
+                  <v-col cols="11" sm="6">
+                    Регистрируясь, я соглашаюсь с
+                    <a
+                      href="https://www.atlassian.com/legal/cloud-terms-of-service"
+                      target="blank"
+                    >Условиями использования продуктов Cloud</a>
+                    и принимаю
+                    <a
+                      href="https://www.atlassian.com/legal/privacy-policy"
+                      target="blank"
+                    >Политику конфиденциальности Atlassian.</a>
+                  </v-col>
+                </v-row>
                 <v-btn
-                  color="primary"
-                  class="mb-4"
-                  text
-                  @click="SetSignMode('login')"
-                >Уже есть аккаунт? Войти</v-btn>
-              </v-row>
+                  class="mt-4 mb-4"
+                  dark
+                  color="green darken-1"
+                  @click="registerBotton = !registerBotton, SignUpF()"
+                >
+                Регистрация
+                </v-btn>
+                <v-row justify="center">
+                  <v-btn
+                    color="primary"
+                    class="mb-4"
+                    text
+                    @click="SetSignMode('login')"
+                  >Уже есть аккаунт? Войти</v-btn>
+                </v-row>
+              </form>
             </v-container>
             <!--SignIN-->
             <v-container v-show="GetSignMode == 'login'">
               <div class="py-3 font-weight-medium">Вход</div>
               <v-row justify="center">
                 <v-col cols="11" sm="6">
-                  <v-text-field label="Введите адрес электронной почты" outlined></v-text-field>
+                  <v-text-field label="Введите адрес электронной почты" outlined v-model="SignInData.email"></v-text-field>
                 </v-col>
               </v-row>
               <v-row justify="center">
@@ -115,6 +129,7 @@
                     :type="show1 ? 'text' : 'password'"
                     @click:append="show1 = !show1"
                     value
+                    v-model="SignInData.password"
                   ></v-text-field>
                 </v-col>
               </v-row>
@@ -134,7 +149,7 @@
                 class="mt-4 mb-4"
                 dark
                 color="green darken-1"
-                @click="registerBotton = !registerBotton"
+                @click="registerBotton = !registerBotton, SignInF()"
               >Вход</v-btn>
               <v-row justify="center">
                 <v-btn
@@ -180,27 +195,27 @@
             </v-col>
           </v-row>
           <v-row justify="center">
-            <v-btn
-              class="mb-8"
-              dark
-              color="red"
-              @click="RestorePassword = false"
-            >
-              Отправить
-            </v-btn>
+            <v-btn class="mb-8" dark color="red" @click="RestorePassword = false">Отправить</v-btn>
           </v-row>
         </v-card>
       </v-dialog>
+
+      <PrimaryPageBlocks />
+      <PrimaryPageBlocksPart2 />
     </v-main>
   </div>
 </template>
 
 <script>
 import toolbar from "../components/toolbar.vue";
+import PrimaryPageBlocks from "../components/PrimaryPageBlocks.vue";
+import PrimaryPageBlocksPart2 from "../components/PrimaryPageBlocksPart2.vue";
 
 export default {
   components: {
-    toolbar
+    toolbar,
+    PrimaryPageBlocks,
+    PrimaryPageBlocksPart2,
   },
   data() {
     return {
@@ -209,9 +224,18 @@ export default {
       show1: false,
       RestorePassword: false,
       rules: {
-        required: value => !!value || "Required.",
-        min: v => v.length >= 6 || "Min 6 characters"
-      }
+        required: (value) => !!value || "Required.",
+        min: (v) => v.length >= 6 || "Min 6 characters",
+      },
+      SignUpData: {
+        email: "",
+        name: "",
+        password: "",
+      },
+      SignInData: {
+        email: "",
+        password: "",
+      },
     };
   },
   computed: {
@@ -220,7 +244,7 @@ export default {
     },
     Get_sign() {
       return this.$store.getters.get_sign;
-    }
+    },
   },
   methods: {
     SetSignMode(mode) {
@@ -228,9 +252,72 @@ export default {
     },
     SetSign(mode) {
       this.$store.dispatch("SetSignAction", mode);
-    }
-  }
+    },
+    async SignUpF() {
+      var data = {
+        email: this.SignUpData.email,
+        name: this.SignUpData.name,
+        password: this.SignUpData.password,
+      };
+      var data2 = await requestPOST("/api/newuser/", data);
+      console.log(data2);
+    },
+    async SignInF() {
+      console.log()
+      var data = {
+        email: this.SignInData.email,
+        password: this.SignInData.password,
+      };
+      var data2 = await requestPOST("/api/signin/", data);
+      console.log(data2);
+    },
+  },
+  async mounted() {
+    await requestGET("/api/autologin/");
+  },
 };
+
+async function requestPOST(url, body) {
+  try {
+    const headers = {
+      "content-type": "application/json",
+    };
+    return await fetch(url, {
+      method: "POST",
+      body: JSON.stringify(body),
+      headers,
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    //.json()
+  } catch (e) {
+    console.log("Ошибка запроса: ", e);
+  }
+}
+/*  */
+
+async function requestGET(url) {
+  try {
+    return await fetch(url, {
+      method: "GET",
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+
+    //.json()
+  } catch (e) {
+    console.log("Ошибка запроса: ", e);
+  }
+}
 </script>
 
 <style scoped>

@@ -1,0 +1,40 @@
+/* 
+         db.on("error", function(err){
+            console.error("Connection error:", err);
+        });
+         db.once("open", function(){
+            console.log("DB connection successful");
+        }); */
+        
+
+
+        let contacts =
+    [
+        {
+            id: 1,
+            name: "Имя",
+            lastname: "Фамилия"
+        },
+        {
+            id: 2,
+            name: "Имя2",
+            lastname: "Фамилия2"
+        }
+    ]
+
+
+        contacts.push({...require.body, id: Date.now()})
+
+
+  app.post('/api/test/', async(require, resolve) => {
+    /* await new users({ name: require.body.name, email: require.body.email, password: require.body.password }); */
+    console.log(require.body.username)
+    resolve.status(200).json(require.body.username)
+  })
+
+
+
+  dbo.collection("customers").findOne({}, function (err, result) {
+            if (err) throw err;
+            console.log(result.name);
+        });
