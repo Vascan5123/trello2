@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-main>
-      <toolbar />
+      <toolbar heightScroll = 600 />
       <v-card class="div1_top pt-12" dark>
         <v-container>
           <v-row justify="center">
@@ -268,8 +268,7 @@ export default {
         email: this.SignInData.email,
         password: this.SignInData.password,
       };
-      var data2 = await requestPOST("/api/signin/", data);
-      console.log(data2);
+      /* var data2 =  */await requestPOST("/api/signin/", data);
     },
   },
   async mounted() {

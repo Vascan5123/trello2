@@ -1,12 +1,12 @@
 <template>
   <div>
-    <v-toolbar :class="{'toolbar2' : windowTop > 600}" class="toolbar1 d-block" flat>
+    <v-toolbar :class="{'toolbar2' : windowTop >= heightScroll}" class="toolbar1 d-block" flat>
       <a class="d-block aLogo ml-5" href="/">
         <img class="h-100 imgLogo" src="../assets/PrimaryPage/trello-logo-blue.png" />
       </a>
 
       <v-spacer></v-spacer>
-
+      <!--not registered-->
       <v-btn
         color="green darken-1"
         dark
@@ -16,16 +16,35 @@
         Войти
         <v-icon class="ml-3">mdi-account-key</v-icon>
       </v-btn>
+
+      <!--registered-->
+      <!-- <v-btn icon dark class="mx-sm-2 mx-1 text-subtitle-1 font-weight-medium" title="Домой">
+        <v-icon>mdi-home</v-icon>
+      </v-btn>
+
+      <v-btn icon dark class="mx-sm-2 mx-1 text-subtitle-1 font-weight-medium" title="Создать">
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
+
+      <v-btn icon dark class="mx-sm-2 mx-1 text-subtitle-1 font-weight-medium" title="Профиль" href="/profile">
+        <v-icon>mdi-account</v-icon>
+      </v-btn> -->
+
+
+
     </v-toolbar>
   </div>
 </template>
 
 <script>
 export default {
-  data(){
-    return{
-      windowTop: 0
-    }
+  props: {
+    heightScroll: String,
+  },
+  data() {
+    return {
+      windowTop: 0,
+    };
   },
   mounted() {
     window.addEventListener("scroll", this.onScroll);
@@ -33,7 +52,7 @@ export default {
   computed: {
     GetSignMode() {
       return this.$store.getters.get_sign_mode;
-    }
+    },
   },
   methods: {
     SetSignMode(mode) {
@@ -44,8 +63,8 @@ export default {
     },
     onScroll(e) {
       this.windowTop = e.target.documentElement.scrollTop;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -63,7 +82,7 @@ export default {
   width: 100%;
   z-index: 2;
 }
-.toolbar2{
+.toolbar2 {
   background: linear-gradient(135deg, #0079bf, #5067c5) !important;
 }
 </style>
