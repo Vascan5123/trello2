@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-main>
-      <toolbar heightScroll = 600 />
+      <toolbar heightScroll="600" />
       <v-card class="div1_top pt-12" dark>
         <v-container>
           <v-row justify="center">
@@ -98,9 +98,7 @@
                   dark
                   color="green darken-1"
                   @click="registerBotton = !registerBotton, SignUpF()"
-                >
-                Регистрация
-                </v-btn>
+                >Регистрация</v-btn>
                 <v-row justify="center">
                   <v-btn
                     color="primary"
@@ -116,7 +114,11 @@
               <div class="py-3 font-weight-medium">Вход</div>
               <v-row justify="center">
                 <v-col cols="11" sm="6">
-                  <v-text-field label="Введите адрес электронной почты" outlined v-model="SignInData.email"></v-text-field>
+                  <v-text-field
+                    label="Введите адрес электронной почты"
+                    outlined
+                    v-model="SignInData.email"
+                  ></v-text-field>
                 </v-col>
               </v-row>
               <v-row justify="center">
@@ -259,20 +261,28 @@ export default {
         name: this.SignUpData.name,
         password: this.SignUpData.password,
       };
-      var data2 = await requestPOST("/api/newuser/", data);
-      console.log(data2);
+      var tokenSignUp = await requestPOST("/api/newuser/", data);
+      if (tokenSignUp.succes == false) {
+        console.log(tokenSignUp.msg)
+      } else {
+        localStorage.setItem("token", tokenSignUp.token);
+      }
     },
     async SignInF() {
-      console.log()
+      console.log();
       var data = {
         email: this.SignInData.email,
         password: this.SignInData.password,
       };
-      /* var data2 =  */await requestPOST("/api/signin/", data);
+      var tokenSignIn = await requestPOST("/api/signin/", data);
+      localStorage.setItem("token", tokenSignIn.token);
+      localStorage.setItem("id", tokenSignIn.user.id);
+      localStorage.setItem("email", tokenSignIn.user.email);
+      localStorage.setItem("name", tokenSignIn.user.name);
     },
   },
   async mounted() {
-    await requestGET("/api/autologin/");
+    await this.$store.dispatch("AutoLogin", await requestGET("/api/autologin/"));
   },
 };
 
@@ -304,6 +314,9 @@ async function requestGET(url) {
   try {
     return await fetch(url, {
       method: "GET",
+      headers: {
+        Authorization: localStorage.getItem("token"),
+      },
     })
       .then((response) => {
         return response.json();

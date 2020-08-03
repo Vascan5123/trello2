@@ -1,24 +1,69 @@
-const express = require('express');
+var express = require('express');
 const router = express.Router();
-const User = require('../mongoDB/schemaUsers');
+var users = require('../mongoDB/schemaUsers.js')
+const mongodbConfig = require("../mongoDb/configDb.js");
+const mongoose = require('mongoose');
+var bodyParser = require('body-parser');
+const session = require('express-session')
 const passport = require('passport')
 const jwt = require('jsonwebtoken')
-const mongodbConfig = require('../mongoDB/configDb');
+
+
+
+
+router.use(bodyParser.urlencoded({ extended: false }))
+router.use(bodyParser.json())
 
 
 
 
 router.post('/api/newuser/', async (require, resolve) => {
 
-    const newUser = await new User({ name: require.body.name, email: require.body.email, password: require.body.password, regData: new Date().getTime() });
+    try {
 
-    await newUser.save().then(() => resolve.status(200).json("Пользователь создан")).catch(error => (resolve.status(400).json("Ошибка")))
+        await mongoose.connection.collection("users").findOne({ email: require.body.email }, function (err, result) {
+            if (result != undefined) {
+                resolve.status(404).json({
+                    succes: false,
+                    msg: "Ошибка. Данный пользователь уже зарегистрирован"
+                })
+            }
+        })
+
+        const newUser = await new users({ name: require.body.name, email: require.body.email, password: require.body.password, regData: new Date().getTime() });
+
+        await newUser.save().then(async () => {
+
+            await mongoose.connection.collection("users").findOne({ email: require.body.email, password: require.body.password }, function (err, result) {
+
+                const token = jwt.sign({
+                    id: result._id,
+                    email: result.email,
+                    password: result.password
+                }, mongodbConfig.secret, {
+                    expiresIn: 3600
+                })
+
+                resolve.status(200).json({
+                    succes: true,
+                    token: "Bearer " + token,
+                    user: {
+                        id: result._id,
+                        email: result.email,
+                        name: result.name
+                    }
+                })
+            })
+
+        })
+    } catch (e) {
+        resolve.status(404).json({
+            succes: false,
+            msg: `Ошибка + ${e}`})
+            throw e
+    }
 
 })
-
-
-
-
 
 
 

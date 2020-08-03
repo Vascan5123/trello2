@@ -38,30 +38,11 @@ require('./passport/passport-config.js')(passport)
 
 
 
-
-
-
-
-
-
-app.get('/api/autologin/', async (require, resolve) => {
-
-    /* const kitty = await new users({ name: contacts[0].name });
-    await kitty.save().then(() => console.log('meow')); */
-
-    resolve.status(200).json("contacts")
+app.get('/api/autologin/', passport.authenticate('jwt', {session: false}), async (require, resolve) => {
+    resolve.status(200).json({
+        succes: true,
+    })
 })
-
-
-
-
-
-/* const newUser = await new users({ name: require.body.name, email: require.body.email, password: require.body.password, regData: new Date().getTime() }); */
-/* await newUser.save().then(() => resolve.status(200).json("Пользователь создан")).catch(error => (resolve.status(400).json("Ошибка"))) */
-
-
-
-
 
 
 
@@ -72,13 +53,17 @@ app.post('/api/signin/', async (require, resolve) => {
     await mongoose.connection.collection("users").findOne({ email: require.body.email, password: require.body.password }, function (err, result) {
 
         if (result != null) {
-            const token = jwt.sign(result, mongodbConfig.secret, {
+            const token = jwt.sign({
+                id: result._id,
+                email: result.email,
+                password: result.password
+            }, mongodbConfig.secret, {
                 expiresIn: 3600
             })
 
             resolve.status(200).json({
                 succes: true,
-                token: "JWT " + token,
+                token: "Bearer " + token,
                 user: {
                     id: result._id,
                     email: result.email,
@@ -96,21 +81,9 @@ app.post('/api/signin/', async (require, resolve) => {
 
 
 
-
-
-
-
 app.get(`*`, function (req, res) {
     res.send('')
 });
-
-
-
-
-
-
-
-
 
 
 async function start() {
