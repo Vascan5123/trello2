@@ -36,18 +36,16 @@ export default {
     },
     actions: {
         AutoLogin({ commit }, payload) {
-            if (payload.succes == true) {
-                commit("SetAutoLogin")
+            if (payload != undefined) {
+                if (payload.succes == true) {
+                    commit("SetAutoLogin")
+                }
             }
         }
+    },
+    getters: {
+        isUserAuthenticated: (state) => state.user.isAuthenticated,
     }
-
-
-
-
-
-
-
 
 }
 

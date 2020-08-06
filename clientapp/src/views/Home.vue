@@ -1,16 +1,6 @@
 <template>
   <div>
-    <v-row justify="center">
-      <v-col cols="5">
-        <form>
-          <v-text-field v-model="form.name" label="Name" required></v-text-field>
-          <v-text-field v-model="form.lastname" label="E-mail"></v-text-field>
-
-          <v-btn class="mr-4 primary" :disabled="!CanCreate" @click="submit">submit</v-btn>
-          <v-btn @click="clear">clear</v-btn>
-        </form>
-      </v-col>
-    </v-row>
+    
   </div>
 </template>
 
@@ -49,8 +39,7 @@ export default {
     }
   },
   async mounted() {
-    var data = await request("/api/contacts/");
-    console.log(data);
+    await request("/api/contacts/");
   }
 };
 

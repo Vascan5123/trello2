@@ -8,6 +8,7 @@
       <v-spacer></v-spacer>
       <!--not registered-->
       <v-btn
+        v-show="!GetIsAuthenticated"
         color="green darken-1"
         dark
         class="mx-sm-5 mx-1 text-subtitle-1 font-weight-medium toolbar_button"
@@ -18,25 +19,32 @@
       </v-btn>
 
       <!--registered-->
-      <!-- <v-btn icon dark class="mx-sm-2 mx-1 text-subtitle-1 font-weight-medium" title="Домой">
-        <v-icon>mdi-home</v-icon>
-      </v-btn>
+      <div v-show="GetIsAuthenticated">
+        <v-btn icon dark class="mx-sm-2 mx-1 text-subtitle-1 font-weight-medium" title="Домой">
+          <v-icon>mdi-home</v-icon>
+        </v-btn>
 
-      <v-btn icon dark class="mx-sm-2 mx-1 text-subtitle-1 font-weight-medium" title="Создать">
-        <v-icon>mdi-plus</v-icon>
-      </v-btn>
+        <v-btn icon dark class="mx-sm-2 mx-1 text-subtitle-1 font-weight-medium" title="Создать">
+          <v-icon>mdi-plus</v-icon>
+        </v-btn>
 
-      <v-btn icon dark class="mx-sm-2 mx-1 text-subtitle-1 font-weight-medium" title="Профиль" href="/profile">
-        <v-icon>mdi-account</v-icon>
-      </v-btn> -->
-
-
-
+        <v-btn
+          icon
+          dark
+          class="mx-sm-2 mx-1 text-subtitle-1 font-weight-medium"
+          title="Профиль"
+          href="/profile"
+        >
+          <v-icon>mdi-account</v-icon>
+        </v-btn>
+      </div>
     </v-toolbar>
   </div>
 </template>
 
 <script>
+import requestGET from "../scripts/requestGET.js";
+
 export default {
   props: {
     heightScroll: String,
@@ -46,12 +54,19 @@ export default {
       windowTop: 0,
     };
   },
-  mounted() {
+  async mounted() {
     window.addEventListener("scroll", this.onScroll);
+    
+    var autoLogin = await requestGET("/api/autologin/");
+
+    await this.$store.dispatch("AutoLogin", autoLogin);
   },
   computed: {
     GetSignMode() {
       return this.$store.getters.get_sign_mode;
+    },
+    GetIsAuthenticated() {
+      return this.$store.getters.isUserAuthenticated;
     },
   },
   methods: {
@@ -63,8 +78,9 @@ export default {
     },
     onScroll(e) {
       this.windowTop = e.target.documentElement.scrollTop;
-    },
+    }
   },
+  
 };
 </script>
 

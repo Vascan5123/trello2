@@ -1,10 +1,9 @@
 <template>
   <div>
     <toolbar heightScroll="0" />
-
-    <v-row>
-        <v-flex></v-flex>
-    </v-row>
+    <v-container>
+      <v-row></v-row>
+    </v-container>
   </div>
 </template>
 

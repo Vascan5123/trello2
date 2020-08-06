@@ -71,7 +71,10 @@ app.post('/api/signin/', async (require, resolve) => {
                 }
             })
         } else if (result == null) {
-            resolve.status(400).json("Ошибка")
+            resolve.status(400).json({
+                succes: false,
+                msg: "Ошибка"
+            })
         }
 
     });

@@ -27,11 +27,19 @@
         </v-container>
         <v-row justify="center">
           <v-btn
+            v-show="!GetIsAuthenticated"
             color="green darken-1"
             large
             class="mb-7"
             @click="SetSign(true), SetSignMode('reg')"
           >Зарегистрируйтесь бесплатно</v-btn>
+          <v-btn
+            v-show="GetIsAuthenticated"
+            color="green darken-1"
+            large
+            class="mb-7"
+            href="/home"
+          >Перейти к вашим доскам</v-btn>
         </v-row>
       </v-card>
       <!--Register-->
@@ -210,6 +218,8 @@
 
 <script>
 import toolbar from "../components/toolbar.vue";
+import requestGET from "../scripts/requestGET.js";
+import requestPOST from "../scripts/requestPOST.js";
 import PrimaryPageBlocks from "../components/PrimaryPageBlocks.vue";
 import PrimaryPageBlocksPart2 from "../components/PrimaryPageBlocksPart2.vue";
 
@@ -247,6 +257,9 @@ export default {
     Get_sign() {
       return this.$store.getters.get_sign;
     },
+    GetIsAuthenticated() {
+      return this.$store.getters.isUserAuthenticated;
+    },
   },
   methods: {
     SetSignMode(mode) {
@@ -269,7 +282,6 @@ export default {
       }
     },
     async SignInF() {
-      console.log();
       var data = {
         email: this.SignInData.email,
         password: this.SignInData.password,
@@ -279,57 +291,18 @@ export default {
       localStorage.setItem("id", tokenSignIn.user.id);
       localStorage.setItem("email", tokenSignIn.user.email);
       localStorage.setItem("name", tokenSignIn.user.name);
+      this.SetSign(false);
+      location.reload()
     },
   },
   async mounted() {
-    await this.$store.dispatch("AutoLogin", await requestGET("/api/autologin/"));
+    var autoLogin = await requestGET("/api/autologin/")
+
+
+    await this.$store.dispatch("AutoLogin", autoLogin);
   },
 };
 
-async function requestPOST(url, body) {
-  try {
-    const headers = {
-      "content-type": "application/json",
-    };
-    return await fetch(url, {
-      method: "POST",
-      body: JSON.stringify(body),
-      headers,
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    //.json()
-  } catch (e) {
-    console.log("Ошибка запроса: ", e);
-  }
-}
-/*  */
-
-async function requestGET(url) {
-  try {
-    return await fetch(url, {
-      method: "GET",
-      headers: {
-        Authorization: localStorage.getItem("token"),
-      },
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-
-    //.json()
-  } catch (e) {
-    console.log("Ошибка запроса: ", e);
-  }
-}
 </script>
 
 <style scoped>
