@@ -20,6 +20,11 @@ const routes = [
     component: () => import('../views/Home.vue')
   },
   {
+    path: '/createtable',
+    name: 'createTable',
+    component: () => import('../views/CreateTable.vue')
+  },
+  {
     path: '/test',
     name: 'test',
     component: () => import('../views/test.vue')

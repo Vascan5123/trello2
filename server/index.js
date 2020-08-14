@@ -67,7 +67,8 @@ app.post('/api/signin/', async (require, resolve) => {
                 user: {
                     id: result._id,
                     email: result.email,
-                    name: result.name
+                    name: result.name,
+                    avatar: result.avatar
                 }
             })
         } else if (result == null) {

@@ -24,7 +24,7 @@
           <v-icon>mdi-home</v-icon>
         </v-btn>
 
-        <v-btn icon dark class="mx-sm-2 mx-1 text-subtitle-1 font-weight-medium" title="Создать">
+        <v-btn icon dark class="mx-sm-2 mx-1 text-subtitle-1 font-weight-medium" href="/createtable" title="Создать">
           <v-icon>mdi-plus</v-icon>
         </v-btn>
 

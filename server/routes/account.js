@@ -16,7 +16,6 @@ router.use(bodyParser.json())
 
 
 
-
 router.post('/api/newuser/', async (require, resolve) => {
 
     try {
@@ -30,7 +29,7 @@ router.post('/api/newuser/', async (require, resolve) => {
             }
         })
 
-        const newUser = await new users({ name: require.body.name, email: require.body.email, password: require.body.password, regData: new Date().getTime() });
+        const newUser = await new users({ name: require.body.name, email: require.body.email, password: require.body.password, avatar: 0, regData: new Date().getTime() });
 
         await newUser.save().then(async () => {
 
@@ -50,7 +49,8 @@ router.post('/api/newuser/', async (require, resolve) => {
                     user: {
                         id: result._id,
                         email: result.email,
-                        name: result.name
+                        name: result.name,
+                        avatar: result.avatar
                     }
                 })
             })
@@ -60,7 +60,6 @@ router.post('/api/newuser/', async (require, resolve) => {
         resolve.status(404).json({
             succes: false,
             msg: `Ошибка + ${e}`})
-            throw e
     }
 
 })
@@ -68,6 +67,36 @@ router.post('/api/newuser/', async (require, resolve) => {
 
 
 
+
+
+
+
+
+
+router.post('/api/newAvatar/', async (require, resolve) => {
+    await mongoose.connection.collection("users").updateOne({_id: mongoose.Types.ObjectId(require.body.id)}, {$set: {avatar: require.body.newAvatar}})
+    resolve.status(200).json({
+        succes: true})
+
+
+})
+
+router.post('/api/newName/', async (require, resolve) => {
+    await mongoose.connection.collection("users").updateOne({_id: mongoose.Types.ObjectId(require.body.id)}, {$set: {name: require.body.newName}})
+    resolve.status(200).json({
+        succes: true})
+
+
+})
+
+router.post('/api/newEmail/', async (require, resolve) => {
+    console.log(require.body.id)
+    await mongoose.connection.collection("users").updateOne({_id: mongoose.Types.ObjectId(require.body.id)}, {$set: {email: require.body.newEmail}})
+    resolve.status(200).json({
+        succes: true})
+
+
+})
 
 
 

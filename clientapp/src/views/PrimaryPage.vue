@@ -218,7 +218,6 @@
 
 <script>
 import toolbar from "../components/toolbar.vue";
-import requestGET from "../scripts/requestGET.js";
 import requestPOST from "../scripts/requestPOST.js";
 import PrimaryPageBlocks from "../components/PrimaryPageBlocks.vue";
 import PrimaryPageBlocksPart2 from "../components/PrimaryPageBlocksPart2.vue";
@@ -276,9 +275,15 @@ export default {
       };
       var tokenSignUp = await requestPOST("/api/newuser/", data);
       if (tokenSignUp.succes == false) {
-        console.log(tokenSignUp.msg)
+        console.log(tokenSignUp.msg);
       } else {
         localStorage.setItem("token", tokenSignUp.token);
+        localStorage.setItem("id", tokenSignUp.user.id);
+        localStorage.setItem("email", tokenSignUp.user.email);
+        localStorage.setItem("name", tokenSignUp.user.name);
+        localStorage.setItem("avatar", tokenSignUp.user.avatar);
+        this.SetSign(false);
+        location.reload();
       }
     },
     async SignInF() {
@@ -291,18 +296,12 @@ export default {
       localStorage.setItem("id", tokenSignIn.user.id);
       localStorage.setItem("email", tokenSignIn.user.email);
       localStorage.setItem("name", tokenSignIn.user.name);
+      localStorage.setItem("avatar", tokenSignIn.user.avatar);
       this.SetSign(false);
-      location.reload()
+      location.reload();
     },
   },
-  async mounted() {
-    var autoLogin = await requestGET("/api/autologin/")
-
-
-    await this.$store.dispatch("AutoLogin", autoLogin);
-  },
 };
-
 </script>
 
 <style scoped>
