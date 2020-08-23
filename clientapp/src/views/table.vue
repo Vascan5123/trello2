@@ -2,7 +2,7 @@
   <v-main class="mainn" id="mainid">
     <toolbar heightScroll="0" color="2" />
     <v-container fluid class="pa-0 container_1 pt-md-16 pt-14 d-flex">
-      <div class="div_top mt-2 mx-2">
+      <div class="div_top mt-2">
         <v-btn
           @click.stop="dialogNewTable = !dialogNewTable"
           dark
@@ -16,11 +16,11 @@
       </div>
 
       <div class="row_lists d-flex pt-16">
-        <v-col
-          cols="10"
-          sm="5"
-          md="3"
-          class="col_lists"
+        <v-card
+          color="transparent"
+          flat
+          class="col_lists mx-2"
+          :style="{zoom : slider_zoom / 100}"
           v-for="numberList in lists"
           :key="numberList.title"
         >
@@ -36,11 +36,10 @@
                 </template>
                 <v-list>
                   <v-list-item>
-                    <v-list-item-title>
+                    <v-col class="shrink">
                       <v-btn text @click="expand = !expand">Выбрать фон из списка</v-btn>
-
                       <v-expand-transition>
-                        <v-card flat v-show="expand" class="mx-auto my-2">
+                        <v-card flat v-show="expand" class="mx-auto my-2" width="200">
                           <v-btn
                             class="colors_fon_lists ma-1"
                             @click="SetFonList(numberList.id, 'primary')"
@@ -58,8 +57,8 @@
                           ></v-btn>
                           <v-btn
                             class="colors_fon_lists ma-1"
-                            @click="SetFonList(numberList.id, 'black')"
-                            color="black"
+                            @click="SetFonList(numberList.id, 'white')"
+                            color="white"
                           ></v-btn>
                           <v-btn
                             class="colors_fon_lists ma-1"
@@ -73,27 +72,31 @@
                           ></v-btn>
                         </v-card>
                       </v-expand-transition>
-                    </v-list-item-title>
+                    </v-col>
                   </v-list-item>
                 </v-list>
               </v-menu>
             </v-card-title>
 
+            <v-card class="card_rows pa-2 ma-2">
+              <b>Номер один</b>
+            </v-card>
+
             <v-btn class="add_card pa-5" text>
               <v-icon>mdi-plus</v-icon>Добавить ещё одну карточку
             </v-btn>
           </v-card>
-        </v-col>
+        </v-card>
 
-        <v-col cols="10" sm="5" md="3" class="col_lists">
-          <v-btn class="card_end pa-10" @click="dialogNewList = true">
+        <v-card color="transparent" flat class="col_lists mx-2" :style="{zoom : slider_zoom / 100}">
+          <v-btn class="card_end pa-10 px-15" @click="dialogNewList = true">
             <v-row justify="center">
               <b>
                 <v-icon>mdi-credit-card-plus</v-icon>Добавить список
               </b>
             </v-row>
           </v-btn>
-        </v-col>
+        </v-card>
       </div>
     </v-container>
 
@@ -129,6 +132,19 @@
           rows="4"
           @input="descriptionSave(description)"
         ></v-textarea>
+        <v-list-item>
+          <v-list-item-icon>
+            <v-icon>mdi-format-float-left</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>Маштаб - {{slider_zoom}} %</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-list-item>
+          <v-slider @input="SaveZoom(slider_zoom)" v-model="slider_zoom" class="align-center my-2" max="200" min="10" hide-details></v-slider>
+        </v-list-item>
+
         <v-btn text block class="py-7 ma-0" @click="expand = !expand">
           <v-list-item>
             <v-list-item-icon>
@@ -268,6 +284,7 @@ export default {
       dialogNewTable: false,
       NewTitleTable: "",
       TableEnabel: "",
+      slider_zoom: 100,
       avatar: [
         require("../assets/profile/avatar/1.png"),
         require("../assets/profile/avatar/2.png"),
@@ -288,12 +305,26 @@ export default {
     };
   },
   methods: {
+    async SaveZoom(zoomNumber){
+      var DataNewZoom = {
+        id: this.id,
+        name: this.$route.params.id,
+        zoom: zoomNumber
+      };
+      var NewZoomRequest = await requestPOST(
+        "/api/newzoom/",
+        DataNewZoom
+      );
+      if (NewZoomRequest == undefined) {
+        location.reload();
+      }
+    },
     async SetFonList(idList, color) {
       var DataFonList = {
         id: this.id,
         name: this.$route.params.id,
         idList: idList,
-        color: color
+        color: color,
       };
       var TitleTableRequest = await requestPOST(
         "/api/setfonlist/",
@@ -302,9 +333,7 @@ export default {
       if (TitleTableRequest == undefined) {
         location.reload();
       } else if (TitleTableRequest.succes == true) {
-        console.log("ggg")
-      } else if (TitleTableRequest.succes == false) {
-        this.TableEnabel = TitleTableRequest.msg;
+        this.lists[TitleTableRequest.number].fon = color;
       }
     },
     async SetNewTitleTable(title) {
@@ -399,6 +428,7 @@ export default {
     this.fon = getInfoTable.table.fon;
 
     this.lists = getInfoTable.table.lists;
+    this.slider_zoom = getInfoTable.table.zoom;
 
     document.getElementById("mainid").style.backgroundImage = `url(${
       this.images[this.fon]
@@ -408,6 +438,14 @@ export default {
 </script>
 
 <style scoped>
+.card_rows {
+  text-align: center;
+  transition: 0.1s;
+}
+.card_rows:hover {
+  cursor: pointer;
+  opacity: 0.7;
+}
 .colors_fon_lists {
   width: 40%;
 }

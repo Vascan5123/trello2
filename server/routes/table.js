@@ -33,7 +33,7 @@ router.post('/api/createtable/', async (require, resolve) => {
 
         if (!tableEnable) {
             await mongoose.connection.collection("users").updateOne({ _id: mongoose.Types.ObjectId(require.body.id) },
-                { $push: { tables: { name: require.body.name, description: "", fon: require.body.fon, lists: [] } } })
+                { $push: { tables: { name: require.body.name, description: "", fon: require.body.fon, zoom: 100, lists: [] } } })
 
             resolve.status(200).json({
                 succes: true
@@ -42,7 +42,8 @@ router.post('/api/createtable/', async (require, resolve) => {
         } else {
             resolve.status(404).json({
                 succes: false,
-                msg: "Уже есть доска с таким именем!"})
+                msg: "Уже есть доска с таким именем!"
+            })
         }
 
     })
@@ -243,24 +244,25 @@ router.post('/api/NewTitleTable/', async (require, resolve) => {
             }
 
             if (tableEnableNumber == false) {
-                
-            for (var i = 0; i < lengthTables; i++) {
-                if (tables1[i].name == require.body.name) {
-                    tables1[i].name = require.body.title
+
+                for (var i = 0; i < lengthTables; i++) {
+                    if (tables1[i].name == require.body.name) {
+                        tables1[i].name = require.body.title
+                    }
                 }
-            }
 
                 await mongoose.connection.collection("users").updateOne({ _id: mongoose.Types.ObjectId(require.body.id) },
-                { $set: { tables: tables1 } })
-    
+                    { $set: { tables: tables1 } })
+
                 resolve.status(200).json({
                     succes: true
                 })
-    
+
             } else {
                 resolve.status(404).json({
                     succes: false,
-                    msg: "Уже есть доска с таким именем!"})
+                    msg: "Уже есть доска с таким именем!"
+                })
             }
 
         })
@@ -269,6 +271,78 @@ router.post('/api/NewTitleTable/', async (require, resolve) => {
     }
 })
 
+
+router.post('/api/setfonlist/', async (require, resolve) => {
+    try {
+        await mongoose.connection.collection("users").findOne({ _id: mongoose.Types.ObjectId(require.body.id) }, async function (err, result) {
+
+            var tables1 = result.tables
+
+            var lengthTables = tables1.length
+
+            var Number = null
+
+            for (var i = 0; i < lengthTables; i++) {
+                if (tables1[i].name == require.body.name) {
+
+                    var lengthLists = tables1[i].lists.length
+
+
+                    for (var j = 0; j < lengthLists; j++) {
+                        if (tables1[i].lists[j].id == require.body.idList) {
+                            tables1[i].lists[j].fon = require.body.color
+                            Number = j
+
+                        }
+                    }
+
+                }
+            }
+
+
+
+            await mongoose.connection.collection("users").updateOne({ _id: mongoose.Types.ObjectId(require.body.id) },
+                { $set: { tables: tables1 } })
+
+            resolve.status(200).json({
+                succes: true,
+                number: Number
+            })
+
+
+        })
+    } catch (error) {
+        resolve.status(404)
+    }
+})
+
+
+router.post('/api/newzoom/', async (require, resolve) => {
+    try {
+        await mongoose.connection.collection("users").findOne({ _id: mongoose.Types.ObjectId(require.body.id) }, async function (err, result) {
+
+            var tables1 = result.tables
+
+            var lengthTables = tables1.length
+
+            for (var i = 0; i < lengthTables; i++) {
+                if (tables1[i].name == require.body.name) {
+                    tables1[i].zoom = require.body.zoom
+                    break
+                }
+            }
+
+            await mongoose.connection.collection("users").updateOne({ _id: mongoose.Types.ObjectId(require.body.id) },
+                { $set: { tables: tables1 } })
+
+            resolve.status(200).json({
+                succes: true
+            })
+        })
+    } catch (error) {
+        resolve.status(404)
+    }
+})
 
 
 
