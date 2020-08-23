@@ -16,6 +16,10 @@
                     <div class="back_black"></div>
                   </v-img>
                 </v-col>
+
+                <v-card-title v-if="length < 1" class="grey--text">У вас нет созданных досок</v-card-title>
+
+
             </v-row>
           </v-card>
         </v-col>
@@ -37,6 +41,7 @@ export default {
   data() {
     return {
       alltables: null,
+      length: null,
       images: [
         "",
         require("../assets/fons/1.jpg"),
@@ -67,6 +72,7 @@ export default {
     var ResponseAllTables = await requestPOST("/api/alltables", data);
     if (ResponseAllTables != undefined) {
       this.alltables = ResponseAllTables.tables;
+      this.length = ResponseAllTables.length
     }
   },
   async beforeCreate() {

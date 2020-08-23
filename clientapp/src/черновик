@@ -68,3 +68,23 @@ async function request(url, method = "GET", data = null) {
 
 
   document.getElementById('mainid').style.backgroundImage = "url(require('../assets/fons/1.jpg'))"
+
+
+
+
+
+
+
+
+
+  <v-col cols="11" sm="6">
+          <v-card>
+            <v-card-title>Мои доски</v-card-title>
+            <v-col cols="10" sm="5" md="4" lg="5" v-for="n in  alltables" :key="n.name">
+                  <v-img :src="images[n.fon]" aspect-ratio="1.8" class="all_tables elevation-4">
+                    <v-card-title class="text-table text-h4" v-text="n.name"></v-card-title>
+                    <div class="back_black"></div>
+                  </v-img>
+                </v-col>
+          </v-card>
+        </v-col>

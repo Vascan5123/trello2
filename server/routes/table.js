@@ -56,7 +56,8 @@ router.post('/api/alltables/', async (require, resolve) => {
         await mongoose.connection.collection("users").findOne({ _id: mongoose.Types.ObjectId(require.body.id) }, function (err, result) {
             resolve.status(200).json({
                 succes: true,
-                tables: result.tables
+                tables: result.tables,
+                length: result.tables.length
             })
         })
     } catch (error) {
@@ -125,22 +126,6 @@ router.post('/api/droptable/', async (require, resolve) => {
 })
 
 
-router.post('/api/alltables/', async (require, resolve) => {
-    try {
-        await mongoose.connection.collection("users").findOne({ _id: mongoose.Types.ObjectId(require.body.id) }, function (err, result) {
-            resolve.status(200).json({
-                succes: true,
-                tables: result.tables
-            })
-        })
-    } catch (error) {
-        resolve.status(404).json({
-            succes: false
-        })
-    }
-})
-
-
 router.post('/api/setdescription/', async (require, resolve) => {
     try {
         await mongoose.connection.collection("users").findOne({ _id: mongoose.Types.ObjectId(require.body.id) }, async function (err, result) {
@@ -205,10 +190,11 @@ router.post('/api/NewList/', async (require, resolve) => {
 
             var lengthTables = tables1.length
 
+            var random = Math.random().toString(36).substr(2, 9) + require.body.title
+
             for (var i = 0; i < lengthTables; i++) {
                 if (tables1[i].name == require.body.name) {
-                    tables1[i].lists.push({ 'id': Math.random().toString(36).substr(2, 9) + require.body.title, 'title': require.body.title, 'fon': "1", 'rows': [] })
-                    newTable = { 'id': Math.random().toString(36).substr(2, 9) + require.body.title, 'title': require.body.title, 'fon': "grey lighten-4", 'rows': [] }
+                    tables1[i].lists.push({ 'id': random, 'title': require.body.title, 'fon': "1", 'cards': [] })
                     break
                 }
             }
@@ -218,7 +204,7 @@ router.post('/api/NewList/', async (require, resolve) => {
 
             resolve.status(200).json({
                 succes: true,
-                newTable: newTable,
+                newTable: { 'id': random, 'title': require.body.title, 'fon': "grey lighten-4", 'cards': [] }
             })
         })
     } catch (error) {
@@ -299,8 +285,6 @@ router.post('/api/setfonlist/', async (require, resolve) => {
                 }
             }
 
-
-
             await mongoose.connection.collection("users").updateOne({ _id: mongoose.Types.ObjectId(require.body.id) },
                 { $set: { tables: tables1 } })
 
@@ -308,7 +292,6 @@ router.post('/api/setfonlist/', async (require, resolve) => {
                 succes: true,
                 number: Number
             })
-
 
         })
     } catch (error) {
@@ -345,7 +328,240 @@ router.post('/api/newzoom/', async (require, resolve) => {
 })
 
 
+router.post('/api/newcard/', async (require, resolve) => {
+    try {
+        await mongoose.connection.collection("users").findOne({ _id: mongoose.Types.ObjectId(require.body.id) }, async function (err, result) {
 
+            var tables1 = result.tables
+
+            var lengthTables = tables1.length
+
+            var random = Math.random().toString(36).substr(2, 9) + require.body.titleCard
+
+            for (var i = 0; i < lengthTables; i++) {
+                if (tables1[i].name == require.body.name) {
+
+                    var lengthLists = tables1[i].lists.length
+
+                    for (var j = 0; j < lengthLists; j++) {
+                        if (tables1[i].lists[j].id == require.body.idList) {
+                            tables1[i].lists[j].cards.push({ 'id': random, 'title': require.body.titleCard, 'description': "", 'fon': "white" })
+                        }
+                    }
+                }
+            }
+
+            await mongoose.connection.collection("users").updateOne({ _id: mongoose.Types.ObjectId(require.body.id) },
+                { $set: { tables: tables1 } })
+
+            resolve.status(200).json({
+                succes: true,
+                newCard: { 'id': random, 'title': require.body.titleCard, 'description': "", 'fon': "white" }
+            })
+        })
+    } catch (error) {
+        resolve.status(404)
+    }
+})
+
+
+router.post('/api/editcard/', async (require, resolve) => {
+    try {
+        await mongoose.connection.collection("users").findOne({ _id: mongoose.Types.ObjectId(require.body.id) }, async function (err, result) {
+
+            var tables1 = result.tables
+
+            var lengthTables = tables1.length
+
+            var infoCard = {}
+
+            for (var i = 0; i < lengthTables; i++) {
+                if (tables1[i].name == require.body.name) {
+
+                    infoCard = tables1[i].lists[require.body.list].cards[require.body.card];
+
+                    break
+                }
+            }
+
+            resolve.status(200).json({
+                succes: true,
+                infoCard: infoCard
+            })
+        })
+    } catch (error) {
+        resolve.status(404)
+    }
+})
+
+
+router.post('/api/setfoncard/', async (require, resolve) => {
+    try {
+        await mongoose.connection.collection("users").findOne({ _id: mongoose.Types.ObjectId(require.body.id) }, async function (err, result) {
+
+            var tables1 = result.tables
+
+            var lengthTables = tables1.length
+
+            for (var i = 0; i < lengthTables; i++) {
+                if (tables1[i].name == require.body.name) {
+
+                    tables1[i].lists[require.body.list].cards[require.body.card].fon
+                        = require.body.fon
+
+                }
+            }
+
+            await mongoose.connection.collection("users").updateOne({ _id: mongoose.Types.ObjectId(require.body.id) },
+                { $set: { tables: tables1 } })
+
+            resolve.status(200).json({
+                succes: true
+            })
+
+        })
+    } catch (error) {
+        resolve.status(404)
+    }
+})
+
+
+router.post('/api/delitecard/', async (require, resolve) => {
+    try {
+        await mongoose.connection.collection("users").findOne({ _id: mongoose.Types.ObjectId(require.body.id) }, async function (err, result) {
+
+            var tables1 = result.tables
+
+            var lengthTables = tables1.length
+
+            var card1 = []
+
+            for (var i = 0; i < lengthTables; i++) {
+                if (tables1[i].name == require.body.name) {
+
+                    var lengthLists = tables1[i].lists[require.body.list].cards.length
+
+                    for (var j = 0; j < lengthLists; j++) {
+                        if (j != require.body.card) {
+
+                            card1.push(tables1[i].lists[require.body.list].cards[j])
+
+                        }
+                    }
+                    tables1[i].lists[require.body.list].cards = card1
+                }
+            }
+
+            await mongoose.connection.collection("users").updateOne({ _id: mongoose.Types.ObjectId(require.body.id) },
+                { $set: { tables: tables1 } })
+
+            resolve.status(200).json({
+                succes: true,
+                card: card1
+            })
+
+        })
+    } catch (error) {
+        resolve.status(404)
+    }
+})
+
+
+router.post('/api/newtitlecard/', async (require, resolve) => {
+    try {
+        await mongoose.connection.collection("users").findOne({ _id: mongoose.Types.ObjectId(require.body.id) }, async function (err, result) {
+
+            var tables1 = result.tables
+
+            var lengthTables = tables1.length
+
+            for (var i = 0; i < lengthTables; i++) {
+                if (tables1[i].name == require.body.name) {
+                    tables1[i].lists[require.body.list].cards[require.body.card].title = require.body.title
+                }
+            }
+
+                await mongoose.connection.collection("users").updateOne({ _id: mongoose.Types.ObjectId(require.body.id) },
+                    { $set: { tables: tables1 } })
+
+                resolve.status(200).json({
+                    succes: true
+                })
+
+        })
+    } catch (error) {
+        resolve.status(404)
+    }
+})
+
+
+router.post('/api/newdescriptioncard/', async (require, resolve) => {
+    try {
+        await mongoose.connection.collection("users").findOne({ _id: mongoose.Types.ObjectId(require.body.id) }, async function (err, result) {
+
+            var tables1 = result.tables
+
+            var lengthTables = tables1.length
+
+            for (var i = 0; i < lengthTables; i++) {
+                if (tables1[i].name == require.body.name) {
+                    tables1[i].lists[require.body.list].cards[require.body.card].description = require.body.description
+                }
+            }
+
+                await mongoose.connection.collection("users").updateOne({ _id: mongoose.Types.ObjectId(require.body.id) },
+                    { $set: { tables: tables1 } })
+
+                resolve.status(200).json({
+                    succes: true
+                })
+
+        })
+    } catch (error) {
+        resolve.status(404)
+    }
+})
+
+
+router.post('/api/delitelist/', async (require, resolve) => {
+    try {
+        await mongoose.connection.collection("users").findOne({ _id: mongoose.Types.ObjectId(require.body.id) }, async function (err, result) {
+
+            var tables1 = result.tables
+
+            var lengthTables = tables1.length
+
+            var lists1 = []
+
+            for (var i = 0; i < lengthTables; i++) {
+                if (tables1[i].name == require.body.name) {
+
+                    var lengthLists = tables1[i].lists.length
+
+                    for (var j = 0; j < lengthLists; j++) {
+                        if (tables1[i].lists[j].id != require.body.listid) {
+
+                            lists1.push(tables1[i].lists[j])
+
+                        }
+                    }
+                    tables1[i].lists = lists1
+                }
+            }
+
+            await mongoose.connection.collection("users").updateOne({ _id: mongoose.Types.ObjectId(require.body.id) },
+                { $set: { tables: tables1 } })
+
+            resolve.status(200).json({
+                succes: true,
+                lists1: lists1
+            })
+
+        })
+    } catch (error) {
+        resolve.status(404)
+    }
+})
 
 
 

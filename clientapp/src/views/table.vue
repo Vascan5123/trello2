@@ -21,8 +21,8 @@
           flat
           class="col_lists mx-2"
           :style="{zoom : slider_zoom / 100}"
-          v-for="numberList in lists"
-          :key="numberList.title"
+          v-for="(numberList, index) in lists"
+          :key="index"
         >
           <v-card class="cards" :color="numberList.fon">
             <v-card-title class="py-2">
@@ -36,60 +36,91 @@
                 </template>
                 <v-list>
                   <v-list-item>
-                    <v-col class="shrink">
-                      <v-btn text @click="expand = !expand">Выбрать фон из списка</v-btn>
-                      <v-expand-transition>
-                        <v-card flat v-show="expand" class="mx-auto my-2" width="200">
-                          <v-btn
-                            class="colors_fon_lists ma-1"
-                            @click="SetFonList(numberList.id, 'primary')"
-                            color="primary"
-                          ></v-btn>
-                          <v-btn
-                            class="colors_fon_lists ma-1"
-                            @click="SetFonList(numberList.id, 'grey lighten-4')"
-                            color="grey lighten-4"
-                          ></v-btn>
-                          <v-btn
-                            class="colors_fon_lists ma-1"
-                            @click="SetFonList(numberList.id, 'grey darken-2')"
-                            color="grey darken-2"
-                          ></v-btn>
-                          <v-btn
-                            class="colors_fon_lists ma-1"
-                            @click="SetFonList(numberList.id, 'white')"
-                            color="white"
-                          ></v-btn>
-                          <v-btn
-                            class="colors_fon_lists ma-1"
-                            @click="SetFonList(numberList.id, 'green')"
-                            color="green"
-                          ></v-btn>
-                          <v-btn
-                            class="colors_fon_lists ma-1"
-                            @click="SetFonList(numberList.id, 'teal')"
-                            color="teal"
-                          ></v-btn>
-                        </v-card>
-                      </v-expand-transition>
-                    </v-col>
+                    <v-btn text @click="expand = !expand">Выбрать фон из списка</v-btn>
+                  </v-list-item>
+                  <v-list-item v-show="expand">
+                    <v-expand-transition>
+                      <v-card flat v-show="expand" class="mx-auto my-2" width="200">
+                        <v-btn
+                          class="colors_fon_lists ma-1"
+                          @click="SetFonList(numberList.id, 'primary')"
+                          color="primary"
+                        ></v-btn>
+                        <v-btn
+                          class="colors_fon_lists ma-1"
+                          @click="SetFonList(numberList.id, 'grey lighten-4')"
+                          color="grey lighten-4"
+                        ></v-btn>
+                        <v-btn
+                          class="colors_fon_lists ma-1"
+                          @click="SetFonList(numberList.id, 'grey darken-2')"
+                          color="grey darken-2"
+                        ></v-btn>
+                        <v-btn
+                          class="colors_fon_lists ma-1"
+                          @click="SetFonList(numberList.id, 'white')"
+                          color="white"
+                        ></v-btn>
+                        <v-btn
+                          class="colors_fon_lists ma-1"
+                          @click="SetFonList(numberList.id, 'green')"
+                          color="green"
+                        ></v-btn>
+                        <v-btn
+                          class="colors_fon_lists ma-1"
+                          @click="SetFonList(numberList.id, 'teal')"
+                          color="teal"
+                        ></v-btn>
+                      </v-card>
+                    </v-expand-transition>
+                  </v-list-item>
+                  <v-list-item>
+                    <v-btn text @click="DeleteList(numberList.id)">Удалить список</v-btn>
                   </v-list-item>
                 </v-list>
               </v-menu>
             </v-card-title>
 
-            <v-card class="card_rows pa-2 ma-2">
-              <b>Номер один</b>
+            <v-card
+              :color="cards.fon"
+              @click="EditCard(index, index2), dialogEditCard = true"
+              class="card_rows pa-2 ma-2"
+              v-for="(cards, index2) in lists[index].cards"
+              :key="index2"
+            >
+              <b>{{cards.title}}</b>
             </v-card>
 
-            <v-btn class="add_card pa-5" text>
-              <v-icon>mdi-plus</v-icon>Добавить ещё одну карточку
-            </v-btn>
+            <v-menu transition="slide-y-reverse-transition" :close-on-content-click="true">
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  class="add_card pa-5"
+                  text
+                  v-bind="attrs"
+                  v-on="on"
+                  @click="text_newCard = ''"
+                >
+                  <v-icon>mdi-plus</v-icon>Добавить ещё одну карточку
+                </v-btn>
+              </template>
+              <v-list>
+                <v-list-item>
+                  <v-text-field label="Введите название карточки" autofocus v-model="text_newCard"></v-text-field>
+                </v-list-item>
+                <v-list-item>
+                  <v-btn
+                    color="success"
+                    block
+                    @click="NewCard(text_newCard, numberList.id, index)"
+                  >Создать</v-btn>
+                </v-list-item>
+              </v-list>
+            </v-menu>
           </v-card>
         </v-card>
 
         <v-card color="transparent" flat class="col_lists mx-2" :style="{zoom : slider_zoom / 100}">
-          <v-btn class="card_end pa-10 px-15" @click="dialogNewList = true">
+          <v-btn class="card_end pa-10 px-15" @click="dialogNewList = true, TitleNewList = ''">
             <v-row justify="center">
               <b>
                 <v-icon>mdi-credit-card-plus</v-icon>Добавить список
@@ -142,7 +173,14 @@
           </v-list-item-content>
         </v-list-item>
         <v-list-item>
-          <v-slider @input="SaveZoom(slider_zoom)" v-model="slider_zoom" class="align-center my-2" max="200" min="10" hide-details></v-slider>
+          <v-slider
+            @input="SaveZoom(slider_zoom)"
+            v-model="slider_zoom"
+            class="align-center my-2"
+            max="200"
+            min="10"
+            hide-details
+          ></v-slider>
         </v-list-item>
 
         <v-btn text block class="py-7 ma-0" @click="expand = !expand">
@@ -240,7 +278,15 @@
 
         <v-divider></v-divider>
 
-        <v-text-field v-model="NewTitleTable" label="Ввести новое имя доски" class="ma-5"></v-text-field>
+        <v-text-field
+          v-model="NewTitleTable"
+          :rules="[
+              () => !!NewTitleTable || 'This field is required',
+              () => !!NewTitleTable && NewTitleTable.length > 1 || 'minimum 2 letters'  
+            ]"
+          label="Ввести новое имя доски"
+          class="ma-5"
+        ></v-text-field>
         <v-alert v-show="TableEnabel != ''" type="error">{{TableEnabel}}</v-alert>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -252,6 +298,108 @@
             @click="SetNewTitleTable(NewTitleTable)"
           >Переименовать</v-btn>
         </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="dialogEditCard" width="800">
+      <v-card>
+        <v-col cols="10" class="mx-auto">
+          <v-card-actions>
+            <v-btn
+              class="mx-auto button_close"
+              fab
+              dark
+              color="red"
+              @click="dialogEditCard = false"
+            >
+              <v-icon>mdi-close</v-icon>
+            </v-btn>
+          </v-card-actions>
+          <v-list>
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon>mdi-credit-card</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>Название</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item>
+              <v-text-field
+                placeholder="Название карточки"
+                filled
+                v-model="InfoEditCard.title"
+                @input="SetNewTitleCard(InfoEditCard)"
+              ></v-text-field>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon>mdi-format-align-left</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>Описание</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item>
+              <v-textarea
+                v-model="InfoEditCard.description"
+                auto-grow
+                filled
+                rows="4"
+                @input="SetNewDescriptionCard(InfoEditCard)"
+              ></v-textarea>
+            </v-list-item>
+            <v-list-item>
+              <v-list-item-icon>
+                <v-icon>mdi-image</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title>Фон</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+            <v-list-item>
+              <v-btn
+                class="colors_fon_card mx-auto ma-1"
+                @click="SetFonCard(InfoEditCard.list, InfoEditCard.card, 'primary')"
+                color="primary"
+              ></v-btn>
+              <v-btn
+                class="colors_fon_card mx-auto ma-1"
+                @click="SetFonCard(InfoEditCard.list, InfoEditCard.card, 'grey lighten-4')"
+                color="grey lighten-4"
+              ></v-btn>
+              <v-btn
+                class="colors_fon_card mx-auto ma-1"
+                @click="SetFonCard(InfoEditCard.list, InfoEditCard.card, 'green')"
+                color="green"
+              ></v-btn>
+            </v-list-item>
+            <v-list-item>
+              <v-btn
+                class="colors_fon_card mx-auto ma-1"
+                @click="SetFonCard(InfoEditCard.list, InfoEditCard.card, 'teal')"
+                color="teal"
+              ></v-btn>
+              <v-btn
+                class="colors_fon_card mx-auto ma-1"
+                @click="SetFonCard(InfoEditCard.list, InfoEditCard.card, 'indigo')"
+                color="indigo"
+              ></v-btn>
+              <v-btn
+                class="colors_fon_card mx-auto ma-1"
+                @click="SetFonCard(InfoEditCard.list, InfoEditCard.card, 'cyan')"
+                color="cyan"
+              ></v-btn>
+            </v-list-item>
+            <v-list-item>
+              <v-btn
+                class="mx-auto my-3"
+                outlined
+                color="red"
+                @click="DeliteCard(InfoEditCard.list, InfoEditCard.card)"
+              >Удалить</v-btn>
+            </v-list-item>
+          </v-list>
+        </v-col>
       </v-card>
     </v-dialog>
   </v-main>
@@ -285,6 +433,9 @@ export default {
       NewTitleTable: "",
       TableEnabel: "",
       slider_zoom: 100,
+      text_newCard: "",
+      InfoEditCard: {},
+      dialogEditCard: false,
       avatar: [
         require("../assets/profile/avatar/1.png"),
         require("../assets/profile/avatar/2.png"),
@@ -305,16 +456,124 @@ export default {
     };
   },
   methods: {
-    async SaveZoom(zoomNumber){
+    async DeleteList(listid) {
+      var DataDelList = {
+        id: this.id,
+        name: this.$route.params.id,
+        listid: listid,
+      };
+      var DelListRequest = await requestPOST("/api/delitelist/", DataDelList);
+      if (DelListRequest == undefined) {
+        location.reload();
+      } else if (DelListRequest.succes == true) {
+        this.lists = DelListRequest.lists1;
+      }
+    },
+    async SetNewDescriptionCard(NewTitle) {
+      var DataNewTitleCard = {
+        id: this.id,
+        name: this.$route.params.id,
+        list: NewTitle.list,
+        card: NewTitle.card,
+        description: NewTitle.description,
+      };
+      var NewTitleCardRequest = await requestPOST(
+        "/api/newdescriptioncard/",
+        DataNewTitleCard
+      );
+      if (NewTitleCardRequest == undefined) {
+        location.reload();
+      } else if (NewTitleCardRequest.succes == true) {
+        this.lists[NewTitle.list].cards[NewTitle.card].description =
+          NewTitle.description;
+      }
+    },
+    async SetNewTitleCard(NewTitle) {
+      var DataNewTitleCard = {
+        id: this.id,
+        name: this.$route.params.id,
+        list: NewTitle.list,
+        card: NewTitle.card,
+        title: NewTitle.title,
+      };
+      var NewTitleCardRequest = await requestPOST(
+        "/api/newtitlecard/",
+        DataNewTitleCard
+      );
+      if (NewTitleCardRequest == undefined) {
+        location.reload();
+      } else if (NewTitleCardRequest.succes == true) {
+        this.lists[NewTitle.list].cards[NewTitle.card].title = NewTitle.title;
+      }
+    },
+    async DeliteCard(list, card) {
+      var DataDelCard = {
+        id: this.id,
+        name: this.$route.params.id,
+        list: list,
+        card: card,
+      };
+      var DelCardRequest = await requestPOST("/api/delitecard/", DataDelCard);
+      if (DelCardRequest == undefined) {
+        location.reload();
+      } else if (DelCardRequest.succes == true) {
+        this.lists[list].cards = DelCardRequest.card;
+        this.dialogEditCard = false;
+      }
+    },
+    async SetFonCard(list, card, fon) {
+      var DataFonCard = {
+        id: this.id,
+        name: this.$route.params.id,
+        list: list,
+        card: card,
+        fon: fon,
+      };
+      var FonCardRequest = await requestPOST("/api/setfoncard/", DataFonCard);
+      if (FonCardRequest == undefined) {
+        location.reload();
+      } else if (FonCardRequest.succes == true) {
+        this.lists[list].cards[card].fon = fon;
+      }
+    },
+    async EditCard(list, card) {
+      var DataEditCard = {
+        id: this.id,
+        name: this.$route.params.id,
+        list: list,
+        card: card,
+      };
+      var EditCardRequest = await requestPOST("/api/editcard/", DataEditCard);
+      if (EditCardRequest == undefined) {
+        location.reload();
+      } else if (EditCardRequest.succes == true) {
+        this.InfoEditCard = EditCardRequest.infoCard;
+        (this.InfoEditCard.list = list), (this.InfoEditCard.card = card);
+      }
+    },
+    async NewCard(text, idList, index) {
+      if (text != "") {
+        var DataNewCard = {
+          id: this.id,
+          name: this.$route.params.id,
+          idList: idList,
+          titleCard: text,
+        };
+        var NewCardRequest = await requestPOST("/api/newcard/", DataNewCard);
+        if (NewCardRequest == undefined) {
+          location.reload();
+        } else if (NewCardRequest.succes == true) {
+          this.lists[index].cards.push(NewCardRequest.newCard);
+        }
+      }
+    },
+    async SaveZoom(zoomNumber) {
       var DataNewZoom = {
         id: this.id,
         name: this.$route.params.id,
-        zoom: zoomNumber
+        zoom: zoomNumber,
       };
-      var NewZoomRequest = await requestPOST(
-        "/api/newzoom/",
-        DataNewZoom
-      );
+      var NewZoomRequest = await requestPOST("/api/newzoom/", DataNewZoom);
       if (NewZoomRequest == undefined) {
         location.reload();
       }
@@ -337,21 +596,23 @@ export default {
       }
     },
     async SetNewTitleTable(title) {
-      var DataTitleTable = {
-        id: this.id,
-        name: this.$route.params.id,
-        title: title,
-      };
-      var TitleTableRequest = await requestPOST(
-        "/api/NewTitleTable/",
-        DataTitleTable
-      );
-      if (TitleTableRequest == undefined) {
-        location.reload();
-      } else if (TitleTableRequest.succes == true) {
-        location.href = `/table/${title}`;
-      } else if (TitleTableRequest.succes == false) {
-        this.TableEnabel = TitleTableRequest.msg;
+      if (title.length > 1) {
+        var DataTitleTable = {
+          id: this.id,
+          name: this.$route.params.id,
+          title: title,
+        };
+        var TitleTableRequest = await requestPOST(
+          "/api/NewTitleTable/",
+          DataTitleTable
+        );
+        if (TitleTableRequest == undefined) {
+          location.reload();
+        } else if (TitleTableRequest.succes == true) {
+          location.href = `/table/${title}`;
+        } else if (TitleTableRequest.succes == false) {
+          this.TableEnabel = TitleTableRequest.msg;
+        }
       }
     },
     async NewList(title) {
@@ -445,6 +706,9 @@ export default {
 .card_rows:hover {
   cursor: pointer;
   opacity: 0.7;
+}
+.colors_fon_card {
+  width: 30%;
 }
 .colors_fon_lists {
   width: 40%;
