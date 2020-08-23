@@ -1,98 +1,106 @@
 <template>
-  <div>
-    <toolbar heightScroll="0" />
-    <v-container mt-15>
-      <v-row justify="center">
-        <v-col cols="11" sm="6" lg="5" xl="4">
-          <v-card class="card_left" dark>
-            <v-card-title>Мои данные</v-card-title>
-            <v-row justify="center">
-              <v-col cols="5">
-                <v-img class="img_avatar" contain :src="avatar[avatarNumber]">
-                  <div class="change_avatar" @click="ChangeAvatar = true">
-                    <v-icon class="icon_plus_avatar" large>mdi-plus-circle</v-icon>
-                  </div>
-                </v-img>
-              </v-col>
-            </v-row>
-            <v-card-title>
-              <v-text-field v-model="name" label="Имя" outlined rounded></v-text-field>
-            </v-card-title>
-            <v-card-title>
-              <v-text-field v-model="email" label="Email" outlined rounded></v-text-field>
-            </v-card-title>
-            <v-card-actions>
-              <v-row justify="center" class="mb-4">
-                <v-btn large color="primary" @click="changeNewName(name), changeNewEmail(email)" rounded>Сохранить</v-btn>
+    <v-main class="mainn">
+      <toolbar heightScroll="0"   color="2" />
+      <v-container class="fill-height" fluid>
+        <v-row justify="center">
+          <v-col cols="11" sm="6" lg="5" xl="4">
+            <v-card class="card_left" dark>
+              <v-card-title>Мои данные</v-card-title>
+              <v-row justify="center">
+                <v-col cols="5">
+                  <v-img class="img_avatar" contain :src="avatar[avatarNumber]">
+                    <div class="change_avatar" @click="ChangeAvatar = true">
+                      <v-icon class="icon_plus_avatar" large>mdi-plus-circle</v-icon>
+                    </div>
+                  </v-img>
+                </v-col>
               </v-row>
-            </v-card-actions>
-          </v-card>
-        </v-col>
-        <!--  -->
-        <v-dialog v-model="ChangeAvatar" width="70%">
-          <v-card>
-            <v-row justify="center">
+              <v-card-title>
+                <v-text-field v-model="name" label="Имя" outlined rounded></v-text-field>
+              </v-card-title>
+              <v-card-title>
+                <v-text-field v-model="email" label="Email" outlined rounded></v-text-field>
+              </v-card-title>
+              <v-card-title>
+                <v-text-field v-model="id" label="ID" outlined rounded readonly></v-text-field>
+              </v-card-title>
               <v-card-actions>
-                <v-btn
-                  class="mt-6"
-                  icon
-                  color="red"
-                  @click="ChangeAvatar = false"
-                  title="Закрыть / Close"
-                >
-                  <v-icon>mdi-close</v-icon>
-                </v-btn>
+                <v-row justify="center" class="mb-4">
+                  <v-btn
+                    large
+                    color="primary"
+                    @click="changeNewName(name), changeNewEmail(email)"
+                    rounded
+                  >Сохранить</v-btn>
+                </v-row>
               </v-card-actions>
-            </v-row>
-            <v-divider></v-divider>
-            <v-row justify="center">
-              <v-card-title class="headline" primary-title>Выбор главного изображения</v-card-title>
-            </v-row>
-            <v-row justify="center">
-              <v-col cols="5" sm="2" ma-2>
-                <v-img
-                  @click="changeNewAvatar(0), ChangeAvatar = false"
-                  class="avatars"
-                  contain
-                  :src="avatar[0]"
-                ></v-img>
-              </v-col>
-              <v-col cols="5" sm="2" ma-2>
-                <v-img
-                  @click="changeNewAvatar(1), ChangeAvatar = false"
-                  class="avatars"
-                  contain
-                  :src="avatar[1]"
-                ></v-img>
-              </v-col>
-              <v-col cols="5" sm="2" ma-2>
-                <v-img
-                  @click="changeNewAvatar(2), ChangeAvatar = false"
-                  class="avatars"
-                  contain
-                  :src="avatar[2]"
-                ></v-img>
-              </v-col>
-              <v-col cols="5" sm="2" ma-2>
-                <v-img
-                  @click="changeNewAvatar(3), ChangeAvatar = false"
-                  class="avatars"
-                  contain
-                  :src="avatar[3]"
-                ></v-img>
-              </v-col>
-            </v-row>
-          </v-card>
-        </v-dialog>
-        <!--  -->
-        <v-col cols="11" sm="6">
-          <v-card>
-            <v-card-title>Мои доски</v-card-title>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
-  </div>
+            </v-card>
+          </v-col>
+          <!--  -->
+          <v-dialog v-model="ChangeAvatar" width="70%">
+            <v-card>
+              <v-row justify="center">
+                <v-card-actions>
+                  <v-btn
+                    class="mt-6"
+                    icon
+                    color="red"
+                    @click="ChangeAvatar = false"
+                    title="Закрыть / Close"
+                  >
+                    <v-icon>mdi-close</v-icon>
+                  </v-btn>
+                </v-card-actions>
+              </v-row>
+              <v-divider></v-divider>
+              <v-row justify="center">
+                <v-card-title class="headline" primary-title>Выбор главного изображения</v-card-title>
+              </v-row>
+              <v-row justify="center">
+                <v-col cols="5" sm="2" ma-2>
+                  <v-img
+                    @click="changeNewAvatar(0), ChangeAvatar = false"
+                    class="avatars"
+                    contain
+                    :src="avatar[0]"
+                  ></v-img>
+                </v-col>
+                <v-col cols="5" sm="2" ma-2>
+                  <v-img
+                    @click="changeNewAvatar(1), ChangeAvatar = false"
+                    class="avatars"
+                    contain
+                    :src="avatar[1]"
+                  ></v-img>
+                </v-col>
+                <v-col cols="5" sm="2" ma-2>
+                  <v-img
+                    @click="changeNewAvatar(2), ChangeAvatar = false"
+                    class="avatars"
+                    contain
+                    :src="avatar[2]"
+                  ></v-img>
+                </v-col>
+                <v-col cols="5" sm="2" ma-2>
+                  <v-img
+                    @click="changeNewAvatar(3), ChangeAvatar = false"
+                    class="avatars"
+                    contain
+                    :src="avatar[3]"
+                  ></v-img>
+                </v-col>
+              </v-row>
+            </v-card>
+          </v-dialog>
+          <!--  -->
+          <v-col cols="11" sm="6">
+            <v-card>
+              <v-card-title>Мои доски</v-card-title>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-container>
+    </v-main>
 </template>
 
 <script>
@@ -110,6 +118,7 @@ export default {
       name: null,
       email: null,
       avatarNumber: null,
+      id: null,
       avatar: [
         require("../assets/profile/avatar/1.png"),
         require("../assets/profile/avatar/2.png"),
@@ -118,14 +127,13 @@ export default {
       ],
     };
   },
-  mounted(){
-    this.name = this.$store.getters.isUserName
-    this.email = this.$store.getters.isUserEmail
-    this.avatarNumber = this.$store.getters.isUserAvatar
+  mounted() {
+    this.id = this.$store.getters.isUserId;
+    this.name = this.$store.getters.isUserName;
+    this.email = this.$store.getters.isUserEmail;
+    this.avatarNumber = this.$store.getters.isUserAvatar;
   },
-  computed: {
-
-  },
+  computed: {},
   methods: {
     async changeNewAvatar(newAvatar) {
       var Obj = {
@@ -214,5 +222,8 @@ export default {
   cursor: pointer;
   background: #444;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+.mainn {
+  background: url("https://storge.pic2.me/cm/1920x1080/433/5875542e04577.jpg");
 }
 </style>

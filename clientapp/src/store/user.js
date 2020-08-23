@@ -47,6 +47,7 @@ export default {
     },
     getters: {
         isUserAuthenticated: (state) => state.user.isAuthenticated,
+        isUserId: (state) => state.user.id,
         isUserName: (state) => state.user.name,
         isUserEmail: (state) => state.user.email,
         isUserAvatar: (state) => state.user.avatar,

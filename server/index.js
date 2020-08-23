@@ -9,8 +9,10 @@ var bodyParser = require('body-parser');
 const session = require('express-session')
 const passport = require('passport')
 const account = require('./routes/account.js')
+const table = require('./routes/table.js')
 const jwt = require('jsonwebtoken')
 app.use(account)
+app.use(table)
 
 
 

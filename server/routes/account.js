@@ -59,7 +59,8 @@ router.post('/api/newuser/', async (require, resolve) => {
     } catch (e) {
         resolve.status(404).json({
             succes: false,
-            msg: `Ошибка + ${e}`})
+            msg: `Ошибка + ${e}`
+        })
     }
 
 })
@@ -74,26 +75,29 @@ router.post('/api/newuser/', async (require, resolve) => {
 
 
 router.post('/api/newAvatar/', async (require, resolve) => {
-    await mongoose.connection.collection("users").updateOne({_id: mongoose.Types.ObjectId(require.body.id)}, {$set: {avatar: require.body.newAvatar}})
+    await mongoose.connection.collection("users").updateOne({ _id: mongoose.Types.ObjectId(require.body.id) }, { $set: { avatar: require.body.newAvatar } })
     resolve.status(200).json({
-        succes: true})
+        succes: true
+    })
 
 
 })
 
 router.post('/api/newName/', async (require, resolve) => {
-    await mongoose.connection.collection("users").updateOne({_id: mongoose.Types.ObjectId(require.body.id)}, {$set: {name: require.body.newName}})
+    await mongoose.connection.collection("users").updateOne({ _id: mongoose.Types.ObjectId(require.body.id) }, { $set: { name: require.body.newName } })
     resolve.status(200).json({
-        succes: true})
+        succes: true
+    })
 
 
 })
 
 router.post('/api/newEmail/', async (require, resolve) => {
     console.log(require.body.id)
-    await mongoose.connection.collection("users").updateOne({_id: mongoose.Types.ObjectId(require.body.id)}, {$set: {email: require.body.newEmail}})
+    await mongoose.connection.collection("users").updateOne({ _id: mongoose.Types.ObjectId(require.body.id) }, { $set: { email: require.body.newEmail } })
     resolve.status(200).json({
-        succes: true})
+        succes: true
+    })
 
 
 })

@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-main>
-      <toolbar heightScroll="600" />
+      <toolbar heightScroll="600" color="1" />
       <v-card class="div1_top pt-12" dark>
         <v-container>
           <v-row justify="center">

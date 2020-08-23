@@ -25,6 +25,11 @@ const routes = [
     component: () => import('../views/CreateTable.vue')
   },
   {
+    path: '/table/:id',
+    name: 'table',
+    component: () => import('../views/table.vue')
+  },
+  {
     path: '/test',
     name: 'test',
     component: () => import('../views/test.vue')

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-toolbar :class="{'toolbar2' : windowTop >= heightScroll}" class="toolbar1 d-block" flat>
+    <v-toolbar :class="[{'toolbar_transparent' : windowTop < heightScroll}, {'toolbar2' : color == 1}, {'toolbar3' : color == 2}] " class="toolbar1 d-block" flat>
       <a class="d-block aLogo ml-5" href="/">
         <img class="h-100 imgLogo" src="../assets/PrimaryPage/trello-logo-blue.png" />
       </a>
@@ -20,11 +20,23 @@
 
       <!--registered-->
       <div v-show="GetIsAuthenticated">
-        <v-btn icon dark class="mx-sm-2 mx-1 text-subtitle-1 font-weight-medium" title="Домой">
+        <v-btn
+          icon
+          dark
+          class="mx-sm-2 mx-1 text-subtitle-1 font-weight-medium"
+          href="/home"
+          title="Домой"
+        >
           <v-icon>mdi-home</v-icon>
         </v-btn>
 
-        <v-btn icon dark class="mx-sm-2 mx-1 text-subtitle-1 font-weight-medium" href="/createtable" title="Создать">
+        <v-btn
+          icon
+          dark
+          class="mx-sm-2 mx-1 text-subtitle-1 font-weight-medium"
+          href="/createtable"
+          title="Создать"
+        >
           <v-icon>mdi-plus</v-icon>
         </v-btn>
 
@@ -48,6 +60,7 @@ import requestGET from "../scripts/requestGET.js";
 export default {
   props: {
     heightScroll: String,
+    color: String,
   },
   data() {
     return {
@@ -56,7 +69,7 @@ export default {
   },
   async mounted() {
     window.addEventListener("scroll", this.onScroll);
-    
+
     var autoLogin = await requestGET("/api/autologin/");
 
     await this.$store.dispatch("AutoLogin", autoLogin);
@@ -78,9 +91,8 @@ export default {
     },
     onScroll(e) {
       this.windowTop = e.target.documentElement.scrollTop;
-    }
+    },
   },
-  
 };
 </script>
 
@@ -92,7 +104,6 @@ export default {
   height: 80%;
 }
 .toolbar1 {
-  background: rgba(0, 0, 0, 0) !important;
   box-shadow: 0px !important;
   position: fixed;
   width: 100%;
@@ -100,5 +111,11 @@ export default {
 }
 .toolbar2 {
   background: linear-gradient(135deg, #0079bf, #5067c5) !important;
+}
+.toolbar3 {
+  background: linear-gradient(135deg, #444, #222) !important;
+}
+.toolbar_transparent{
+  background: rgba(0, 0, 0, 0) !important;
 }
 </style>
