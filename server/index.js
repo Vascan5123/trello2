@@ -16,7 +16,6 @@ app.use(table)
 
 
 
-/* app.use('/static', express.static(path.resolve("src"))) */
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())

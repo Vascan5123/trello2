@@ -26,7 +26,20 @@
         >
           <v-card class="cards" :color="numberList.fon">
             <v-card-title class="py-2">
-              {{numberList.title}}
+              <v-menu :close-on-content-click="false">
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn v-bind="attrs" class="text-h6 px-0" v-on="on" text>{{numberList.title}}</v-btn>
+                </template>
+                <v-card flat>
+                  <v-text-field
+                    dense
+                    class="mx-2 pa-0"
+                    autofocus
+                    v-model="numberList.title"
+                    @input="NewListName(numberList.id, numberList.title)"
+                  ></v-text-field>
+                </v-card>
+              </v-menu>
               <v-spacer></v-spacer>
               <v-menu transition="slide-x-reverse-transition" :close-on-content-click="false">
                 <template v-slot:activator="{ on, attrs }">
@@ -456,6 +469,18 @@ export default {
     };
   },
   methods: {
+    async NewListName(listid, title) {
+      var DataNewListName = {
+        id: this.id,
+        name: this.$route.params.id,
+        listid: listid,
+        title: title
+      };
+      var NewListNameRequest = await requestPOST("/api/newlistname/", DataNewListName);
+      if (NewListNameRequest == undefined) {
+        location.reload();
+      }
+    },
     async DeleteList(listid) {
       var DataDelList = {
         id: this.id,

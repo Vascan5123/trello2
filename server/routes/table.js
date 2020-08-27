@@ -481,12 +481,12 @@ router.post('/api/newtitlecard/', async (require, resolve) => {
                 }
             }
 
-                await mongoose.connection.collection("users").updateOne({ _id: mongoose.Types.ObjectId(require.body.id) },
-                    { $set: { tables: tables1 } })
+            await mongoose.connection.collection("users").updateOne({ _id: mongoose.Types.ObjectId(require.body.id) },
+                { $set: { tables: tables1 } })
 
-                resolve.status(200).json({
-                    succes: true
-                })
+            resolve.status(200).json({
+                succes: true
+            })
 
         })
     } catch (error) {
@@ -509,12 +509,12 @@ router.post('/api/newdescriptioncard/', async (require, resolve) => {
                 }
             }
 
-                await mongoose.connection.collection("users").updateOne({ _id: mongoose.Types.ObjectId(require.body.id) },
-                    { $set: { tables: tables1 } })
+            await mongoose.connection.collection("users").updateOne({ _id: mongoose.Types.ObjectId(require.body.id) },
+                { $set: { tables: tables1 } })
 
-                resolve.status(200).json({
-                    succes: true
-                })
+            resolve.status(200).json({
+                succes: true
+            })
 
         })
     } catch (error) {
@@ -555,6 +555,43 @@ router.post('/api/delitelist/', async (require, resolve) => {
             resolve.status(200).json({
                 succes: true,
                 lists1: lists1
+            })
+
+        })
+    } catch (error) {
+        resolve.status(404)
+    }
+})
+
+
+router.post('/api/newlistname/', async (require, resolve) => {
+    try {
+        await mongoose.connection.collection("users").findOne({ _id: mongoose.Types.ObjectId(require.body.id) }, async function (err, result) {
+
+            var tables1 = result.tables
+
+            var lengthTables = tables1.length
+
+            for (var i = 0; i < lengthTables; i++) {
+                if (tables1[i].name == require.body.name) {
+
+                    var lengthLists = tables1[i].lists.length
+
+
+                    for (var j = 0; j < lengthLists; j++) {
+                        if (tables1[i].lists[j].id == require.body.listid) {
+                            tables1[i].lists[j].title = require.body.title
+                        }
+                    }
+
+                }
+            }
+
+            await mongoose.connection.collection("users").updateOne({ _id: mongoose.Types.ObjectId(require.body.id) },
+                { $set: { tables: tables1 } })
+
+            resolve.status(200).json({
+                succes: true,
             })
 
         })
